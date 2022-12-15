@@ -113,12 +113,14 @@ function addResultRaceToLastData(data) {
 //Show  data in window
 function deActivateElementWindow() {
   //Заборонии можливість вибору дати і запуску нового забігу
-  //TODO
+  disableElement(refs.inputDate);
+  disableElement(refs.btnStart);
 }
 
 function activateElementWindow() {
   //Активувати можливість вибору дати і запуску нового забігу
-  //TODO
+  enableElement(refs.inputDate);
+  enableElement(refs.btnStart);
 }
 
 // ! Animation
@@ -189,7 +191,7 @@ function onClickStart(event) {
 }
 
 function onSelectedDataTime(selectedDates) {
-  curentDate = selectedDates[0].setHours(0, 0, 0, 0);
+  curentDate = selectedDates[0];
   curentInfornation = getCurentInformation(curentDate, dataRaces);
 
   //1. Змінити заголовок з датою
@@ -214,7 +216,7 @@ function getOptionFlatpickr() {
   };
 }
 
-// ! ----------------------------------------------------
+// * ----------------------------------------------------
 function startRase(horses) {
   const race = horses.map(runHorse);
 
@@ -247,6 +249,8 @@ function startRase(horses) {
 
     // запуНИТИ анімацію
     stopAnimation();
+
+    console.dir(dataRaces);
   });
 }
 
@@ -261,4 +265,13 @@ function runHorse(horse) {
 
 function getRandomTime(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+// * Disable Enambe elements
+function disableElement(element) {
+  element.setAttribute('disabled', '');
+}
+
+function enableElement(element) {
+  element.removeAttribute('disabled');
 }
