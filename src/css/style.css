@@ -1,0 +1,83 @@
+/* * {
+  outline: 1px solid red;
+} */
+h1,
+h2,
+h3,
+h4,
+h4,
+h5,
+h6,
+p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.hippodrom {
+  width: 1024;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.title__hippodrom {
+  text-align: center;
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+.date__hippodrom {
+  text-align: center;
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.date-wrap {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.resuts__hippodrom {
+  display: flex;
+  gap: 20px;
+}
+
+.left-wrap__hippodrom {
+  width: 100%;
+}
+.right-wrap__hippodrom {
+  width: 100%;
+}
+
+.table-winner__hippodrom {
+  width: 100%;
+}
+
+.table-result-race__hippodrom {
+  width: 100%;
+}
+
+.title-winner {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.title-result {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.table-winner__hippodrom,
+.table-result-race__hippodrom {
+  border-collapse: collapse;
+}
+
+.table-winner__hippodrom th,
+.table-winner__hippodrom td {
+  padding: 10px;
+  border: 1px solid #2a2a2a;
+}
+
+.table-result-race__hippodrom th,
+.table-result-race__hippodrom td {
+  padding: 10px;
+  border: 1px solid #2a2a2a;
+}

@@ -4,10 +4,86 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="../node_modules/modern-normalize/modern-normalize.css"
+    />
     <link rel="stylesheet" href="./css/style.css" />
     <title>🏇️🏇️🏇️ Hippodrome!!! 🏇️🏇️🏇️</title>
   </head>
   <body>
-    <script src="./js/script.js"></script>
+    <section class="hippodrom">
+      <h1 class="title__hippodrom">Іподром "Стара Кляча"</h1>
+      <h2 class="date__hippodrom" data-title-date>01 september 2022 y</h2>
+
+      <div class="date-wrap">
+        <label
+          >Дата забігів
+          <input type="text" data-input-date />
+        </label>
+
+        <button type="button" data-start>Старт нового забігу</button>
+      </div>
+
+      <div class="resuts__hippodrom">
+        <div class="left-wrap__hippodrom">
+          <h3 class="title-winner">Наші переможці</h3>
+          <table class="table-winner__hippodrom data-winner">
+            <thead>
+              <tr>
+                <th>Номер забігу</th>
+                <th>Імʼя коня</th>
+                <th>Час</th>
+              </tr>
+            </thead>
+            <tr>
+              <td>433</td>
+              <td>Київ - Ковель</td>
+              <td>5 годин</td>
+            </tr>
+            <tr>
+              <td>701</td>
+              <td>Харків - Дніпро</td>
+              <td>7 годин</td>
+            </tr>
+            <tr>
+              <td>258</td>
+              <td>Львів - Одеса</td>
+              <td>4 годин</td>
+            </tr>
+          </table>
+        </div>
+        <div class="right-wrap__hippodrom">
+          <h3 class="title-result">Переможці забігу</h3>
+          <table class="table-result-race__hippodrom" data-races>
+            <thead>
+              <tr>
+                <th>Місце</th>
+                <th>Імʼя коня</th>
+                <th>Час</th>
+              </tr>
+            </thead>
+
+            <tr>
+              <td>433</td>
+              <td>Київ - Ковель</td>
+              <td>5 годин</td>
+            </tr>
+            <tr>
+              <td>701</td>
+              <td>Харків - Дніпро</td>
+              <td>7 годин</td>
+            </tr>
+            <tr>
+              <td>258</td>
+              <td>Львів - Одеса</td>
+              <td>4 годин</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <script src="./js/script.js" type="module"></script>
   </body>
 </html>
