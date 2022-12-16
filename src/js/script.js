@@ -16,10 +16,14 @@ const horses = [
   'Horse9',
   'Horse10',
 ];
+const MIN_TIME_RACE = 2000;
+const MAX_TIME_RACE = 3500;
+const KEY_LOCAL_SROREGE = 'history_races_ippodrom';
+const CLASS_NAME_ACTIVE_ROW = 'active_row';
 
 let curentDate = new Date();
 
-const dataRaces = {};
+let dataRaces = {};
 
 //1. Знаходимо елементи вікна
 const refs = findElementWindow();
@@ -31,7 +35,7 @@ connectFlatpickr();
 connectEvents(refs);
 
 //4. Читаємо дані із сховища
-loadSaveData(dataRaces);
+dataRaces = loadSaveData();
 
 //5. Виводимо дату
 changeTitleDate(curentDate);
@@ -52,6 +56,7 @@ function findElementWindow() {
     tableRaces: document.querySelector('[data-races]'),
   };
 }
+//{ winer: {}, results: [] }
 
 // Data races
 // const dataRaces = {
@@ -72,7 +77,6 @@ function getCurentInformation(data, dataRaces) {
   if (!dataRaces[startDay]) {
     dataRaces[startDay] = [];
   }
-
   return dataRaces[startDay];
 }
 
@@ -91,23 +95,33 @@ function getNewElmentRace() {
 }
 
 function loadSaveData(dataRaces) {
-  //TODO
-  console.log('loadSaveData');
+  try {
+    const serializedState = localStorage.getItem(KEY_LOCAL_SROREGE);
+
+    return serializedState === null ? {} : JSON.parse(serializedState);
+  } catch (error) {
+    console.log('error loadSaveData');
+  }
+  return {};
 }
 
 function saveData(dataRaces) {
-  //TODO
-  console.log('saveData');
+  localStorage.setItem(KEY_LOCAL_SROREGE, JSON.stringify(dataRaces));
 }
 
 function addWinnertoData(data) {
   const newResult = getNewElmentRace();
-  curentInfornation.push(newResult);
+  const lastNumber = curentInfornation.push(newResult);
   newResult.winer = data;
+
+  saveData(dataRaces);
+
+  return lastNumber;
 }
 
 function addResultRaceToLastData(data) {
   curentInfornation.at(-1).results = data;
+  saveData(dataRaces);
 }
 
 //Show  data in window
@@ -135,32 +149,32 @@ function stopAnimation() {
 // ! Winner
 function showTableWinner() {
   //Показати ВСЮ таблицю переможців
-  //TODO
-  //формувати html
-  //Всунути в елемент
-
-  //Знайти номер останнього заїзду
-  //активувати останній елемент
-  //curentInfornation
+  refs.tableWinner.innerHTML = getHtmlStrTableWinner(curentInfornation);
 
   //Вивести для активного заїзду всі дані
-  let numberRaces = 1;
-  showRaces(numberRaces);
+  showActiveResultLastRace();
 }
 
-function addToTableWinner(data) {
+function addToTableWinner(data, number) {
   //Додати на екран в таблицю переможця один запис
-  //TODO
+
+  refs.tableWinner.insertAdjacentHTML('beforeend', gethtmlStrRow(data, number));
 }
 
 // ! Race
 function showActiveResultLastRace() {
   //Вивести результат останнього заїзду
-  //TODO
+  showRaces(curentInfornation.length);
+
+  remoteActiveAllRows(refs.tableWinner);
+  addActiveFromRow(refs.tableWinner, curentInfornation.length);
 }
 
 function showRaces(numberRaces) {
-  //TODO
+  //show information from curent races
+  refs.tableRaces.innerHTML = getHtmlStrTAb(
+    curentInfornation[numberRaces - 1]?.results
+  );
 }
 
 // * TitleDate
@@ -177,6 +191,7 @@ function changeTitleDate(curentDate) {
 // * Events
 function connectEvents(refs) {
   refs.btnStart.addEventListener('click', onClickStart);
+  refs.tableWinner.addEventListener('click', onClickWinner);
 }
 
 function onClickStart(event) {
@@ -200,6 +215,11 @@ function onSelectedDataTime(selectedDates) {
   showTableWinner();
 }
 
+function onClickWinner(event) {
+  remoteActiveAllRows(refs.tableWinner);
+  addActiveFromRow(refs.tableWinner, event.target.parentElement.rowIndex);
+  showRaces(event.target.parentElement.rowIndex);
+}
 // * flatpickr
 function connectFlatpickr() {
   flatpickr(refs.inputDate, getOptionFlatpickr());
@@ -222,18 +242,15 @@ function startRase(horses) {
 
   Promise.race(race).then(result => {
     //Вивести переможця заїзду
-
-    console.log('First finished');
-
-    addWinnertoData(result);
+    const number = addWinnertoData(result);
 
     //Show to screen
-    addToTableWinner(result);
+    addToTableWinner(result, number);
+    showActiveResultLastRace();
   });
 
   Promise.all(race).then(results => {
     //Вивести Результати заїзду
-    console.log('Result race');
 
     //Сортуємо переможців
     results.sort((a, b) => a.time - b.time);
@@ -249,14 +266,12 @@ function startRase(horses) {
 
     // запуНИТИ анімацію
     stopAnimation();
-
-    console.dir(dataRaces);
   });
 }
 
 function runHorse(horse) {
   return new Promise((resolve, reject) => {
-    const time = getRandomTime(2000, 3500);
+    const time = getRandomTime(MIN_TIME_RACE, MAX_TIME_RACE);
     setTimeout(() => {
       resolve({ horse, time });
     }, time);
@@ -274,4 +289,45 @@ function disableElement(element) {
 
 function enableElement(element) {
   element.removeAttribute('disabled');
+}
+
+function gethtmlStrRow(data, number) {
+  return `
+            <tr data-number-rows-${number}>
+              <td>${number}</td>
+              <td>${data.horse}</td>
+              <td>${data.time}</td>
+            </tr>
+            `;
+}
+
+function getHtmlStrTAb(resulrRace) {
+  if (!resulrRace) return '';
+
+  let result = '';
+  for (let i = 0; i < resulrRace.length; i++) {
+    result += gethtmlStrRow(resulrRace[i], i + 1);
+  }
+  return result;
+}
+
+function getHtmlStrTableWinner(results) {
+  let result = '';
+  for (let i = 0; i < results.length; i++) {
+    result += gethtmlStrRow(results[i].winer, i + 1);
+  }
+  return result;
+}
+
+function remoteActiveAllRows(table) {
+  const activeRow = table.querySelectorAll(`.${CLASS_NAME_ACTIVE_ROW}`);
+  for (const row of activeRow) {
+    row.classList.remove(CLASS_NAME_ACTIVE_ROW);
+  }
+}
+function addActiveFromRow(table, number) {
+  const row = table.querySelector(`[data-number-rows-${number}]`);
+  if (row) {
+    row.classList.add(CLASS_NAME_ACTIVE_ROW);
+  }
 }
